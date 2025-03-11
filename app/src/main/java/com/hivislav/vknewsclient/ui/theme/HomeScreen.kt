@@ -15,16 +15,41 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.hivislav.vknewsclient.MainViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.hivislav.vknewsclient.NewsFeedViewModel
+import com.hivislav.vknewsclient.domain.FeedPost
+
+@Composable
+fun HomeScreen(
+    paddingValues: PaddingValues,
+    onCommentClick: (FeedPost) -> Unit
+) {
+
+    val viewModel: NewsFeedViewModel = viewModel()
+    val screenState by viewModel.screenState.observeAsState(NewsFeedScreenState.Initial)
+
+    when (val state = screenState) {
+        is NewsFeedScreenState.Posts -> {
+            FeedPosts(
+                viewModel = viewModel,
+                paddingValues = paddingValues,
+                posts = state.posts,
+                onCommentClick = onCommentClick
+            )
+        }
+
+        NewsFeedScreenState.Initial -> {}
+    }
+}
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun HomeScreen(
-    viewModel: MainViewModel,
+private fun FeedPosts(
+    posts: List<FeedPost>,
+    viewModel: NewsFeedViewModel,
     paddingValues: PaddingValues,
+    onCommentClick: (FeedPost) -> Unit
 ) {
-    val feedPosts by viewModel.feedPosts.observeAsState(emptyList())
-
     LazyColumn(
         modifier = Modifier
             .padding(paddingValues),
@@ -35,7 +60,7 @@ fun HomeScreen(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(
-            items = feedPosts,
+            items = posts,
             key = { it.id }
         ) { feedPost ->
             val state = rememberDismissState()
@@ -58,7 +83,7 @@ fun HomeScreen(
                         viewModel.updateCount(feedPost = feedPost, item = it)
                     },
                     onCommentClickListener = {
-                        viewModel.updateCount(feedPost = feedPost, item = it)
+                        onCommentClick(feedPost)
                     },
                     onLikeClickListener = {
                         viewModel.updateCount(feedPost = feedPost, item = it)
