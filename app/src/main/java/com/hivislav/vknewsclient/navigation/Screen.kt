@@ -17,10 +17,11 @@ sealed class Screen(val screenName: String) {
         }
     }
 
-    private companion object {
+    companion object {
 
+        const val KEY_FEED_POST_ID = "feed_post_id"
         private const val HOME_SCREEN = "home_screen"
-        private const val COMMENTS_SCREEN = "comments_screen/{feed_post_id}"
+        private const val COMMENTS_SCREEN = "comments_screen/{$KEY_FEED_POST_ID}"
         private const val NEWS_FEED_SCREEN = "news_feed_screen"
 
         private const val FAVOURITE_SCREEN = "favourite_screen"
