@@ -20,7 +20,7 @@ class CommentsViewModel(
 
     private fun loadComments(feedPost: FeedPost) {
         val comments = List(10) {
-            PostComment(id = it)
+            PostComment(id = it, commentText = "COMMENT $it")
         }
 
         _screenState.value = CommentsScreenState.Comments(
