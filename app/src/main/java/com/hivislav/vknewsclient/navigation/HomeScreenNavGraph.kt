@@ -24,12 +24,11 @@ fun NavGraphBuilder.homeScreenNavGraph(
             route = Screen.Comments.screenName,
             arguments = listOf(
                 navArgument(Screen.KEY_FEED_POST) {
-                    type = NavType.StringType
+                    type = FeedPost.NavigationType
                 }
             )
         ) {
-            val feedPostJson = it.arguments?.getString(Screen.KEY_FEED_POST) ?: ""
-            val feedPost = Gson().fromJson(feedPostJson, FeedPost::class.java)
+            val feedPost = it.arguments?.getParcelable(Screen.KEY_FEED_POST, FeedPost::class.java) ?: throw Exception("error get parcelable")
             commentsScreenContent(feedPost)
         }
     }
