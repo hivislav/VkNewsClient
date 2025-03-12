@@ -2,10 +2,11 @@ package com.hivislav.vknewsclient.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.navArgument
 import com.hivislav.vknewsclient.domain.FeedPost
-import com.hivislav.vknewsclient.navigation.Screen.Companion.KEY_FEED_POST_ID
 
 fun NavGraphBuilder.homeScreenNavGraph(
     newsFeedScreenContent: @Composable () -> Unit,
@@ -18,9 +19,22 @@ fun NavGraphBuilder.homeScreenNavGraph(
         composable(route = Screen.NewsFeedScreen.screenName) {
             newsFeedScreenContent()
         }
-        composable(route = Screen.Comments.screenName) {
-            val feedPostId = it.arguments?.getString(KEY_FEED_POST_ID)?.toIntOrNull() ?: 0
-            commentsScreenContent(FeedPost(id = feedPostId))
+        composable(
+            route = Screen.Comments.screenName,
+            arguments = listOf(
+                navArgument(Screen.KEY_FEED_POST_ID) {
+                    type = NavType.IntType
+                }
+            )
+        ) {
+            val feedPostId = it.arguments?.getInt(Screen.KEY_FEED_POST_ID) ?: 0
+            val feedPostContent = it.arguments?.getString(Screen.KEY_FEED_POST_CONTENT) ?: ""
+            commentsScreenContent(
+                FeedPost(
+                    id = feedPostId,
+                    contentText = feedPostContent
+                )
+            )
         }
     }
 }
