@@ -9,7 +9,7 @@ import com.hivislav.vknewsclient.ui.theme.NewsFeedScreenState
 
 class NewsFeedViewModel : ViewModel() {
     private val initialSource = List(20) {
-        FeedPost(id = it.toLong())
+        FeedPost(id = it)
     }
 
     private val _screenState = MutableLiveData<NewsFeedScreenState>(NewsFeedScreenState.Posts(initialSource))
