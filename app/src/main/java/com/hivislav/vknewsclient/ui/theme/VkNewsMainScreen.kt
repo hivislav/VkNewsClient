@@ -1,6 +1,7 @@
 package com.hivislav.vknewsclient.ui.theme
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -19,6 +20,8 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.hivislav.vknewsclient.navigation.AppNavGraph
 import com.hivislav.vknewsclient.navigation.rememberNavigationState
+import com.vk.id.onetap.compose.onetap.OneTap
+import com.vk.id.onetap.compose.onetap.OneTapTitleScenario
 
 @Composable
 fun MainScreen() {
@@ -58,27 +61,37 @@ fun MainScreen() {
             }
         }
     ) { innerPadding ->
-        AppNavGraph(
-            navHostController = navigationState.navController,
-            newsFeedScreenContent = {
-                HomeScreen(
-                    paddingValues = innerPadding,
-                    onCommentClick = {
-                        navigationState.navigateToComments(feedPost = it)
-                    }
-                )
-            },
-            commentsScreenContent = { feedPost ->
-                CommentsScreen(
-                    feedPost = feedPost,
-                    onBackPressed = {
-                        navigationState.navController.popBackStack()
-                    }
-                )
-            },
-            favouriteScreenContent = { TextCounter(text = "Favourite", color = Color.Black) },
-            profileScreenContent = { TextCounter(text = "Profile", color = Color.Black) }
-        )
+
+        Column {
+            OneTap(
+                onAuth = { oAuth, token ->
+
+                },
+                scenario = OneTapTitleScenario.SignIn,
+                signInAnotherAccountButtonEnabled = true
+            )
+            AppNavGraph(
+                navHostController = navigationState.navController,
+                newsFeedScreenContent = {
+                    HomeScreen(
+                        paddingValues = innerPadding,
+                        onCommentClick = {
+                            navigationState.navigateToComments(feedPost = it)
+                        }
+                    )
+                },
+                commentsScreenContent = { feedPost ->
+                    CommentsScreen(
+                        feedPost = feedPost,
+                        onBackPressed = {
+                            navigationState.navController.popBackStack()
+                        }
+                    )
+                },
+                favouriteScreenContent = { TextCounter(text = "Favourite", color = Color.Black) },
+                profileScreenContent = { TextCounter(text = "Profile", color = Color.Black) }
+            )
+        }
     }
 }
 
