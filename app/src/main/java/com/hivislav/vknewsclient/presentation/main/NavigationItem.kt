@@ -1,4 +1,4 @@
-package com.hivislav.vknewsclient.ui.theme
+package com.hivislav.vknewsclient.presentation.main
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Favorite

@@ -17,7 +17,7 @@
         android:theme="@style/Theme.VkNewsClient"
         tools:targetApi="31">
         <activity
-            android:name="com.hivislav.vknewsclient.MainActivity"
+            android:name="com.hivislav.vknewsclient.presentation.main.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.VkNewsClient">

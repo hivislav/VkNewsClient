@@ -1,11 +1,10 @@
-package com.hivislav.vknewsclient
+package com.hivislav.vknewsclient.presentation.news
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.hivislav.vknewsclient.domain.FeedPost
 import com.hivislav.vknewsclient.domain.StatisticItem
-import com.hivislav.vknewsclient.ui.theme.NewsFeedScreenState
 
 class NewsFeedViewModel : ViewModel() {
     private val initialSource = List(20) {

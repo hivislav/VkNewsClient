@@ -1,4 +1,4 @@
-package com.hivislav.vknewsclient.ui.theme
+package com.hivislav.vknewsclient.presentation.comments
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -30,9 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hivislav.vknewsclient.domain.PostComment
-import com.hivislav.vknewsclient.CommentsViewModel
-import com.hivislav.vknewsclient.CommentsViewModelFactory
 import com.hivislav.vknewsclient.domain.FeedPost
+import com.hivislav.vknewsclient.ui.theme.VkNewsClientTheme
 
 @Composable
 fun CommentsScreen(

@@ -1,4 +1,4 @@
-package com.hivislav.vknewsclient
+package com.hivislav.vknewsclient.presentation.comments
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

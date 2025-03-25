@@ -1,4 +1,4 @@
-package com.hivislav.vknewsclient.ui.theme
+package com.hivislav.vknewsclient.presentation.comments
 
 import com.hivislav.vknewsclient.domain.FeedPost
 import com.hivislav.vknewsclient.domain.PostComment

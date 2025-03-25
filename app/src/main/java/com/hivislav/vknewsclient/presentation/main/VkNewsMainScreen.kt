@@ -1,4 +1,4 @@
-package com.hivislav.vknewsclient.ui.theme
+package com.hivislav.vknewsclient.presentation.main
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -20,8 +20,8 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.hivislav.vknewsclient.navigation.AppNavGraph
 import com.hivislav.vknewsclient.navigation.rememberNavigationState
-import com.vk.id.onetap.compose.onetap.OneTap
-import com.vk.id.onetap.compose.onetap.OneTapTitleScenario
+import com.hivislav.vknewsclient.presentation.comments.CommentsScreen
+import com.hivislav.vknewsclient.presentation.news.NewsFeedScreen
 
 @Composable
 fun MainScreen() {
@@ -63,17 +63,10 @@ fun MainScreen() {
     ) { innerPadding ->
 
         Column {
-            OneTap(
-                onAuth = { oAuth, token ->
-
-                },
-                scenario = OneTapTitleScenario.SignIn,
-                signInAnotherAccountButtonEnabled = true
-            )
             AppNavGraph(
                 navHostController = navigationState.navController,
                 newsFeedScreenContent = {
-                    HomeScreen(
+                    NewsFeedScreen(
                         paddingValues = innerPadding,
                         onCommentClick = {
                             navigationState.navigateToComments(feedPost = it)

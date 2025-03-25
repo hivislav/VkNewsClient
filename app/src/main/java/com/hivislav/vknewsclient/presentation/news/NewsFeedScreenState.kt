@@ -1,4 +1,4 @@
-package com.hivislav.vknewsclient.ui.theme
+package com.hivislav.vknewsclient.presentation.news
 
 import com.hivislav.vknewsclient.domain.FeedPost
 
