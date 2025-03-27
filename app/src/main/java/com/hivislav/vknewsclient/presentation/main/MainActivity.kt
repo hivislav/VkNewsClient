@@ -14,7 +14,9 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             VkNewsClientTheme {
-                val mainViewModel: MainViewModel = viewModel()
+                val mainViewModel: MainViewModel = viewModel(
+                    factory = MainViewModelFactory(context = this)
+                )
                 val authState = mainViewModel.stateAuthScreen.observeAsState(AuthState.Initial)
                 when (authState.value) {
                     is AuthState.Authorized -> {
