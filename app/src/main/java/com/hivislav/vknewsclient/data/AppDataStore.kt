@@ -6,15 +6,14 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.hivislav.vknewsclient.domain.AuthInteractor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class AuthInteractorImpl(val context: Context): AuthInteractor {
-    override fun getToken(): Flow<String?> = context.dataStore.data
+class AppDataStore(private val context: Context) {
+    fun getToken(): Flow<String?> = context.dataStore.data
         .map { preferences -> preferences[PREFERENCES_KEY_TOKEN] }
 
-    override suspend fun updateToken(token: String) {
+    suspend fun updateToken(token: String) {
         context.dataStore.edit { preferences ->
             preferences[PREFERENCES_KEY_TOKEN] = token
         }

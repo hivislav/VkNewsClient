@@ -5,8 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hivislav.vknewsclient.data.AuthInteractorImpl
-import com.hivislav.vknewsclient.domain.AuthInteractor
+import com.hivislav.vknewsclient.data.AppDataStore
 import com.vk.id.AccessToken
 import com.vk.id.VKID
 import com.vk.id.VKIDAuthFail
@@ -18,7 +17,7 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(context: Context) : ViewModel() {
 
-    private val authInteractor: AuthInteractor = AuthInteractorImpl(context = context)
+    private val appDataStore: AppDataStore = AppDataStore(context = context)
     private val _stateAuthScreen = MutableLiveData<AuthState>(AuthState.Initial)
     val stateAuthScreen: LiveData<AuthState> = _stateAuthScreen
 
@@ -29,7 +28,7 @@ class MainViewModel(context: Context) : ViewModel() {
             _stateAuthScreen.value = AuthState.Authorized(accessToken.token)
             isTokenUpdated.value = true
             viewModelScope.launch {
-                authInteractor.updateToken(token = accessToken.token)
+                appDataStore.updateToken(token = accessToken.token)
             }
         }
 
@@ -43,7 +42,7 @@ class MainViewModel(context: Context) : ViewModel() {
             _stateAuthScreen.value = AuthState.Authorized(token = token.token)
             isTokenUpdated.value = true
             viewModelScope.launch {
-                authInteractor.updateToken(token = token.token)
+                appDataStore.updateToken(token = token.token)
             }
         }
 
@@ -54,7 +53,7 @@ class MainViewModel(context: Context) : ViewModel() {
 
     init {
         viewModelScope.launch {
-            authInteractor.getToken().collect { token ->
+            appDataStore.getToken().collect { token ->
                 if (!token.isNullOrBlank()) {
                     if (isTokenUpdated.value != true) {
                         VKID.instance.refreshToken(

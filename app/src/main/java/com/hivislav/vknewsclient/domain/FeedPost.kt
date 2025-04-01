@@ -11,12 +11,13 @@ import kotlinx.parcelize.Parcelize
 data class FeedPost(
     val id: Long,
     val communityName: String,
+    val communityId: Long,
     val publicationDate: String,
     val communityImageUrl: String,
     val contentText: String,
     val contentImageUrl: String?,
     val statistics: List<StatisticItem>,
-    val isFavorite: Boolean
+    val isLiked: Boolean
 ) :Parcelable {
     companion object {
         val NavigationType = object : NavType<FeedPost>(false) {

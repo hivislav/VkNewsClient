@@ -14,7 +14,6 @@ data class NewsFeedContentApi(
 data class PostApi(
     @SerializedName("id") val id: Long,
     @SerializedName("source_id") val communityId: Long?,
-    @SerializedName("is_favorite") val isFavorite: Boolean?,
     @SerializedName("text") val text: String?,
     @SerializedName("date") val date: Long?,
     @SerializedName("likes") val likes: LikesApi?,
@@ -25,7 +24,8 @@ data class PostApi(
 )
 
 data class LikesApi(
-    @SerializedName("count") val count: Int?
+    @SerializedName("count") val count: Int?,
+    @SerializedName("user_likes") val userLikes: Int?
 )
 
 data class CommentsApi(

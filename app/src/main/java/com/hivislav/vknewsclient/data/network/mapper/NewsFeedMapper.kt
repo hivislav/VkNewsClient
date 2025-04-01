@@ -21,6 +21,7 @@ class NewsFeedMapper {
             val feedPost = FeedPost(
                 id = post.id,
                 communityName = group.name ?: "",
+                communityId = post.communityId ?: 0,
                 publicationDate = ((post.date ?: 0) * 1000L).mapTimeStampToDate(),
                 communityImageUrl = group.imageUrl ?: "",
                 contentText = post.text ?: "",
@@ -31,7 +32,7 @@ class NewsFeedMapper {
                     StatisticItem(type = StatisticType.SHARES, post.reposts?.count ?: 0),
                     StatisticItem(type = StatisticType.COMMENTS, post.comments?.count ?: 0)
                 ),
-                isFavorite = post.isFavorite ?: false
+                isLiked = (post.likes?.userLikes ?: 0) > 0
             )
             result.add(feedPost)
         }
