@@ -4,6 +4,9 @@ import com.hivislav.vknewsclient.data.network.model.NewsFeedResponse
 import com.hivislav.vknewsclient.domain.FeedPost
 import com.hivislav.vknewsclient.domain.StatisticItem
 import com.hivislav.vknewsclient.domain.StatisticType
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import kotlin.math.absoluteValue
 
 class NewsFeedMapper {
@@ -18,7 +21,7 @@ class NewsFeedMapper {
             val feedPost = FeedPost(
                 id = post.id,
                 communityName = group.name ?: "",
-                publicationDate = post.date.toString(),
+                publicationDate = ((post.date ?: 0) * 1000L).mapTimeStampToDate(),
                 communityImageUrl = group.imageUrl ?: "",
                 contentText = post.text ?: "",
                 contentImageUrl = post.attachments?.firstOrNull()?.photo?.photoUrls?.lastOrNull()?.url,
@@ -27,10 +30,16 @@ class NewsFeedMapper {
                     StatisticItem(type = StatisticType.VIEWS, post.views?.count ?: 0),
                     StatisticItem(type = StatisticType.SHARES, post.reposts?.count ?: 0),
                     StatisticItem(type = StatisticType.COMMENTS, post.comments?.count ?: 0)
-                )
+                ),
+                isFavorite = post.isFavorite ?: false
             )
             result.add(feedPost)
         }
         return result
+    }
+
+    private fun Long.mapTimeStampToDate(): String {
+        val date = Date(this)
+        return SimpleDateFormat("d MMMM yyyy, hh:mm", Locale.getDefault()).format(date)
     }
 }
