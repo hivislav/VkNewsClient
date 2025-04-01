@@ -12,18 +12,25 @@ import com.vk.id.VKID
 import com.vk.id.VKIDAuthFail
 import com.vk.id.auth.VKIDAuthCallback
 import com.vk.id.auth.VKIDAuthParams
+import com.vk.id.refresh.VKIDRefreshTokenCallback
+import com.vk.id.refresh.VKIDRefreshTokenFail
 import kotlinx.coroutines.launch
 
 class MainViewModel(context: Context) : ViewModel() {
 
     private val authInteractor: AuthInteractor = AuthInteractorImpl(context = context)
+    private val _stateAuthScreen = MutableLiveData<AuthState>(AuthState.Initial)
+    val stateAuthScreen: LiveData<AuthState> = _stateAuthScreen
+
+    private val isTokenUpdated = MutableLiveData(false)
 
     private val vkAuthCallback = object : VKIDAuthCallback {
         override fun onAuth(accessToken: AccessToken) {
+            _stateAuthScreen.value = AuthState.Authorized(accessToken.token)
+            isTokenUpdated.value = true
             viewModelScope.launch {
                 authInteractor.updateToken(token = accessToken.token)
             }
-            _stateAuthScreen.value = AuthState.Authorized(accessToken.token)
         }
 
         override fun onFail(fail: VKIDAuthFail) {
@@ -31,13 +38,29 @@ class MainViewModel(context: Context) : ViewModel() {
         }
     }
 
+    private val vkRefreshTokenCallback = object : VKIDRefreshTokenCallback {
+        override fun onSuccess(token: AccessToken) {
+            _stateAuthScreen.value = AuthState.Authorized(token = token.token)
+            isTokenUpdated.value = true
+            viewModelScope.launch {
+                authInteractor.updateToken(token = token.token)
+            }
+        }
+
+        override fun onFail(fail: VKIDRefreshTokenFail) {
+            // TODO
+        }
+    }
+
     init {
         viewModelScope.launch {
             authInteractor.getToken().collect { token ->
                 if (!token.isNullOrBlank()) {
-                    val refreshToken = VKID.instance.refreshToken?.token ?: ""
-                    authInteractor.updateToken(token = refreshToken)
-                    _stateAuthScreen.value = AuthState.Authorized(token = refreshToken)
+                    if (isTokenUpdated.value != true) {
+                        VKID.instance.refreshToken(
+                            callback = vkRefreshTokenCallback
+                        )
+                    }
                 } else {
                     VKID.instance.authorize(
                         callback = vkAuthCallback,
@@ -49,9 +72,6 @@ class MainViewModel(context: Context) : ViewModel() {
             }
         }
     }
-
-    private val _stateAuthScreen = MutableLiveData<AuthState>(AuthState.Initial)
-    val stateAuthScreen: LiveData<AuthState> = _stateAuthScreen
 
     companion object {
         private const val VK_SCOPE_WALL = "wall"

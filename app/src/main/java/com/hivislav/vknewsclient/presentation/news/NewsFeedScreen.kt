@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hivislav.vknewsclient.domain.FeedPost
@@ -24,7 +25,9 @@ fun NewsFeedScreen(
     onCommentClick: (FeedPost) -> Unit
 ) {
 
-    val viewModel: NewsFeedViewModel = viewModel()
+    val viewModel: NewsFeedViewModel = viewModel(
+        factory = NewsFeedViewModelFactory(context = LocalContext.current)
+    )
     val screenState by viewModel.screenState.observeAsState(NewsFeedScreenState.Initial)
 
     when (val state = screenState) {
@@ -68,7 +71,7 @@ private fun FeedPosts(
             }
 
             SwipeToDismiss(
-                modifier = Modifier.animateItemPlacement(),
+                modifier = Modifier.animateItem(),
                 state = state,
                 background = {},
                 directions = setOf(DismissDirection.EndToStart)
