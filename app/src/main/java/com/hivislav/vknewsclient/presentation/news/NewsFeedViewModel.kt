@@ -30,6 +30,14 @@ class NewsFeedViewModel(
         }
     }
 
+    fun loadNextNewsFeed() {
+        _screenState.value = NewsFeedScreenState.Posts(
+            posts = repository.feedPosts,
+            nexDataIsLoading = true
+        )
+        loadNewsFeed()
+    }
+
     fun changeLikeStatus(feedPost: FeedPost) {
         viewModelScope.launch {
             repository.changeLikeStatus(feedPost = feedPost)

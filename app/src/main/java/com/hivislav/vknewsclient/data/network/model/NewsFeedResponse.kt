@@ -8,7 +8,8 @@ data class NewsFeedResponse(
 
 data class NewsFeedContentApi(
     @SerializedName("items") val posts: List<PostApi>?,
-    @SerializedName("groups") val groups: List<GroupApi>?
+    @SerializedName("groups") val groups: List<GroupApi>?,
+    @SerializedName("next_from") val nextFrom: String?
 )
 
 data class PostApi(

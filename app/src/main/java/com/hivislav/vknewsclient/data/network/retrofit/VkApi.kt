@@ -12,6 +12,13 @@ interface VkApi {
         @Query("filters") filters: String = "post"
     ): NewsFeedResponse
 
+    @GET("newsfeed.get?v=5.199")
+    suspend fun fetchNewsFeed(
+        @Query("access_token") token: String,
+        @Query("filters") filters: String = "post",
+        @Query("start_from") startFrom: String
+    ): NewsFeedResponse
+
     @GET("likes.add?v=5.199&type=post")
     suspend fun addLike(
         @Query("access_token") token: String,
