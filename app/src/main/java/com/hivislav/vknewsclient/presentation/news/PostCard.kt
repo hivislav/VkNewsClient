@@ -40,7 +40,6 @@ fun PostCard(
     feedPost: FeedPost,
     onLikeClickListener: (StatisticItem) -> Unit,
     onShareClickListener: (StatisticItem) -> Unit,
-    onViewsClickListener: (StatisticItem) -> Unit,
     onCommentClickListener: (StatisticItem) -> Unit,
 ) {
     Card(
@@ -67,7 +66,6 @@ fun PostCard(
                 onLikeClickListener = onLikeClickListener,
                 onCommentClickListener = onCommentClickListener,
                 onShareClickListener = onShareClickListener,
-                onViewsClickListener = onViewsClickListener,
                 isFavorite = feedPost.isLiked
             )
         }
@@ -116,7 +114,6 @@ private fun Statistics(
     statistics: List<StatisticItem>,
     onLikeClickListener: (StatisticItem) -> Unit,
     onShareClickListener: (StatisticItem) -> Unit,
-    onViewsClickListener: (StatisticItem) -> Unit,
     onCommentClickListener: (StatisticItem) -> Unit,
     isFavorite: Boolean,
 ) {
@@ -127,10 +124,7 @@ private fun Statistics(
             val viewsItem = statistics.getItemByType(StatisticType.VIEWS)
             IconWithText(
                 iconResId = R.drawable.ic_views_count,
-                text = formatStatisticCount(viewsItem.count),
-                onItemClickListener = {
-                    onViewsClickListener(viewsItem)
-                }
+                text = formatStatisticCount(viewsItem.count)
             )
         }
         Row(
@@ -183,13 +177,14 @@ private fun IconWithText(
     iconResId: Int,
     tint: Color = MaterialTheme.colors.onSecondary,
     text: String,
-    onItemClickListener: () -> Unit,
+    onItemClickListener: (() -> Unit)? = null,
 ) {
     Row(
-        modifier = Modifier
-            .clickable {
+        modifier = if (onItemClickListener != null) {
+            Modifier.clickable {
                 onItemClickListener()
-            },
+            }
+        } else Modifier,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(

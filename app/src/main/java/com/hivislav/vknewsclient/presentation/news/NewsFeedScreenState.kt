@@ -8,4 +8,6 @@ sealed class NewsFeedScreenState {
         val nexDataIsLoading: Boolean = false,
     ) : NewsFeedScreenState()
     object Initial : NewsFeedScreenState()
+
+    object Loading: NewsFeedScreenState()
 }

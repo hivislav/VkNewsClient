@@ -23,13 +23,23 @@ interface VkApi {
     suspend fun addLike(
         @Query("access_token") token: String,
         @Query("owner_id") ownerId: Long,
-        @Query("item_id") postId: Long
+        @Query("item_id") postId: Long,
+        @Query("type") type: String = "post"
     ): LikesCountResponse
 
-    @GET("likes.delete?v=5.199&type=post")
+    @GET("likes.delete?v=5.199")
     suspend fun deleteLike(
         @Query("access_token") token: String,
         @Query("owner_id") ownerId: Long,
-        @Query("item_id") postId: Long
+        @Query("item_id") postId: Long,
+        @Query("type") type: String = "post"
     ): LikesCountResponse
+
+    @GET("newsfeed.ignoreItem?v=5.199")
+    suspend fun ignorePost(
+        @Query("access_token") token: String,
+        @Query("owner_id") ownerId: Long,
+        @Query("item_id") postId: Long,
+        @Query("type") type: String = "wall"
+    )
 }

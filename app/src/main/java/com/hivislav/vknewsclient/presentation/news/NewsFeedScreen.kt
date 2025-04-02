@@ -3,6 +3,7 @@ package com.hivislav.vknewsclient.presentation.news
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -47,6 +48,15 @@ fun NewsFeedScreen(
             )
         }
 
+        NewsFeedScreenState.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator(color = DarkBlue)
+            }
+        }
+
         NewsFeedScreenState.Initial -> {}
     }
 }
@@ -75,7 +85,7 @@ private fun FeedPosts(
         ) { feedPost ->
             val state = rememberDismissState()
             if (state.isDismissed(DismissDirection.EndToStart)) {
-                viewModel.removeFeedPost(feedPost)
+                viewModel.deleteFeedPost(feedPost)
             }
 
             SwipeToDismiss(
@@ -86,12 +96,7 @@ private fun FeedPosts(
             ) {
                 PostCard(
                     feedPost = feedPost,
-                    onViewsClickListener = {
-                        viewModel.updateCount(feedPost = feedPost, item = it)
-                    },
-                    onShareClickListener = {
-                        viewModel.updateCount(feedPost = feedPost, item = it)
-                    },
+                    onShareClickListener = {},
                     onCommentClickListener = {
                         onCommentClick(feedPost)
                     },
