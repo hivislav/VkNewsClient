@@ -1,6 +1,6 @@
 package com.hivislav.vknewsclient.presentation.comments
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -19,19 +20,21 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.hivislav.vknewsclient.domain.PostComment
+import coil.compose.AsyncImage
+import com.hivislav.vknewsclient.R
 import com.hivislav.vknewsclient.domain.FeedPost
-import com.hivislav.vknewsclient.ui.theme.VkNewsClientTheme
+import com.hivislav.vknewsclient.domain.PostComment
 
 @Composable
 fun CommentsScreen(
@@ -40,7 +43,10 @@ fun CommentsScreen(
 ) {
 
     val viewModel: CommentsViewModel = viewModel(
-        factory = CommentsViewModelFactory(feedPost)
+        factory = CommentsViewModelFactory(
+            feedPost = feedPost,
+            context = LocalContext.current
+        )
     )
     val screenState by viewModel.screenState.observeAsState(CommentsScreenState.Initial)
 
@@ -52,7 +58,7 @@ fun CommentsScreen(
                 TopAppBar(
                     title = {
                         Text(
-                            text = "Comments for FeedPost Id: ${currentState.feedPost.id}"
+                            text = stringResource(R.string.comments_title)
                         )
                     },
                     navigationIcon = {
@@ -60,7 +66,7 @@ fun CommentsScreen(
                             onClick = onBackPressed
                         ) {
                             Icon(
-                                imageVector = Icons.Filled.ArrowBack,
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = ""
                             )
                         }
@@ -76,7 +82,8 @@ fun CommentsScreen(
                     start = 8.dp,
                     end = 8.dp,
                     bottom = 72.dp
-                )
+                ),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 items(
                     items = currentState.comments,
@@ -103,15 +110,17 @@ private fun CommentItem(
                 vertical = 4.dp
             )
     ) {
-        Image(
-            modifier = Modifier.size(24.dp),
-            painter = painterResource(id = comment.authorAvatarId),
+        AsyncImage(
+            modifier = Modifier
+                .size(48.dp)
+                .clip(CircleShape),
+            model = comment.authorAvatarUrl,
             contentDescription = ""
         )
         Spacer(modifier = Modifier.width(8.dp))
         Column {
             Text(
-                text = "${comment.authorName} CommentId: ${comment.id}",
+                text = comment.authorName,
                 color = MaterialTheme.colors.onPrimary,
                 fontSize = 12.sp
             )
@@ -128,13 +137,5 @@ private fun CommentItem(
                 fontSize = 12.sp
             )
         }
-    }
-}
-
-@Preview
-@Composable
-private fun PreviewComment() {
-    VkNewsClientTheme {
-        CommentItem(comment = PostComment(1))
     }
 }

@@ -5,6 +5,7 @@ import com.hivislav.vknewsclient.data.AppDataStore
 import com.hivislav.vknewsclient.data.network.mapper.NewsFeedMapper
 import com.hivislav.vknewsclient.data.network.retrofit.VkApiFactory
 import com.hivislav.vknewsclient.domain.FeedPost
+import com.hivislav.vknewsclient.domain.PostComment
 import com.hivislav.vknewsclient.domain.StatisticItem
 import com.hivislav.vknewsclient.domain.StatisticType
 import kotlinx.coroutines.flow.firstOrNull
@@ -25,12 +26,12 @@ class NewsFeedRepository(context: Context) {
         val startFrom = nextFrom
         if (startFrom == null && feedPosts.isNotEmpty()) return feedPosts
 
-        val response = if(startFrom == null) {
+        val response = if (startFrom == null) {
             api.fetchNewsFeed(token = getAccessToken())
         } else api.fetchNewsFeed(token = getAccessToken(), startFrom = startFrom)
 
         nextFrom = response.newsFeedContent?.nextFrom
-        val posts = mapper.mapResponseToPosts(responseDto = response)
+        val posts = mapper.mapResponseToPosts(newsFeedResponse = response)
         _feedPosts.addAll(posts)
         return feedPosts
     }
@@ -70,6 +71,16 @@ class NewsFeedRepository(context: Context) {
         )
 
         _feedPosts.remove(feedPost)
+    }
+
+    suspend fun fetchComments(feedPost: FeedPost): List<PostComment> {
+        val response = api.fetchComments(
+            token = getAccessToken(),
+            ownerId = feedPost.communityId,
+            postId = feedPost.id
+        )
+
+        return mapper.mapResponseToComments(commentsResponse = response)
     }
 
     private suspend fun getAccessToken(): String {
