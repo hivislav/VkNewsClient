@@ -22,8 +22,8 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
@@ -48,7 +48,7 @@ fun CommentsScreen(
             context = LocalContext.current
         )
     )
-    val screenState by viewModel.screenState.observeAsState(CommentsScreenState.Initial)
+    val screenState by viewModel.screenState.collectAsState(CommentsScreenState.Initial)
 
     val currentState = screenState
 

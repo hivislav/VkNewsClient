@@ -11,11 +11,14 @@ import com.hivislav.vknewsclient.domain.StatisticType
 import com.hivislav.vknewsclient.utils.mergeWith
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.flow.stateIn
 
 class NewsFeedRepository(context: Context) {
@@ -49,6 +52,11 @@ class NewsFeedRepository(context: Context) {
             emit(feedPosts)
         }
     }
+        .retry {
+            // TODO
+            delay(RETRY_TIMEOUT_MILLIS)
+            true
+        }
 
     private val _feedPosts = mutableListOf<FeedPost>()
     private val feedPosts: List<FeedPost>
@@ -105,17 +113,24 @@ class NewsFeedRepository(context: Context) {
         refreshedListFlow.emit(feedPosts)
     }
 
-    suspend fun fetchComments(feedPost: FeedPost): List<PostComment> {
+    fun fetchComments(feedPost: FeedPost): Flow<List<PostComment>> = flow {
         val response = api.fetchComments(
             token = getAccessToken(),
             ownerId = feedPost.communityId,
             postId = feedPost.id
         )
-
-        return mapper.mapResponseToComments(commentsResponse = response)
-    }
+        emit(mapper.mapResponseToComments(commentsResponse = response))
+    }.retry {
+            // TODO
+            delay(RETRY_TIMEOUT_MILLIS)
+            true
+        }
 
     private suspend fun getAccessToken(): String {
         return appDataStore.getToken().firstOrNull() ?: throw IllegalStateException("token is null")
+    }
+
+    companion object {
+        private const val RETRY_TIMEOUT_MILLIS = 2000L
     }
 }
