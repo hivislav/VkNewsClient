@@ -16,8 +16,8 @@ import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.rememberDismissState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -35,7 +35,7 @@ fun NewsFeedScreen(
     val viewModel: NewsFeedViewModel = viewModel(
         factory = NewsFeedViewModelFactory(context = LocalContext.current)
     )
-    val screenState by viewModel.screenState.observeAsState(NewsFeedScreenState.Initial)
+    val screenState by viewModel.screenState.collectAsState(NewsFeedScreenState.Initial)
 
     when (val state = screenState) {
         is NewsFeedScreenState.Posts -> {
@@ -43,7 +43,7 @@ fun NewsFeedScreen(
                 viewModel = viewModel,
                 paddingValues = paddingValues,
                 posts = state.posts,
-                nextDataIsLoading = state.nexDataIsLoading,
+                nextDataIsLoading = state.nextDataIsLoading,
                 onCommentClick = onCommentClick
             )
         }
