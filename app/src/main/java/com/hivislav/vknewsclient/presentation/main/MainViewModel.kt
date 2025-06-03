@@ -1,8 +1,6 @@
 package com.hivislav.vknewsclient.presentation.main
 
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hivislav.vknewsclient.data.AppDataStore
@@ -13,15 +11,17 @@ import com.vk.id.auth.VKIDAuthCallback
 import com.vk.id.auth.VKIDAuthParams
 import com.vk.id.refresh.VKIDRefreshTokenCallback
 import com.vk.id.refresh.VKIDRefreshTokenFail
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class MainViewModel(context: Context) : ViewModel() {
 
     private val appDataStore: AppDataStore = AppDataStore(context = context)
-    private val _stateAuthScreen = MutableLiveData<AuthState>(AuthState.Initial)
-    val stateAuthScreen: LiveData<AuthState> = _stateAuthScreen
+    private val _stateAuthScreen = MutableStateFlow<AuthState>(AuthState.Initial)
+    val stateAuthScreen: StateFlow<AuthState> = _stateAuthScreen
 
-    private val isTokenUpdated = MutableLiveData(false)
+    private val isTokenUpdated = MutableStateFlow(false)
 
     private val vkAuthCallback = object : VKIDAuthCallback {
         override fun onAuth(accessToken: AccessToken) {
